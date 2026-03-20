@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13151b;
+      --border: #1f2230;
+      --accent: #c8f135;
+      --accent2: #7b61ff;
+      --text: #e8eaf0;
+      --muted: #6b7280;
+      --card-bg: #111318;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── GLOW BLOB ── */
+    .blob {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(123, 97, 255, 0.18) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      pointer-events: none;
+      animation: blobmove 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes blobmove {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+
+      to {
+        transform: translate(-80px, 120px) scale(1.1);
+      }
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 24px 120px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadein 0.8s 0.1s ease forwards;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 30px rgba(200, 241, 53, 0.25);
+    }
+
+    .header-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header-text h1 span {
+      color: var(--accent);
+    }
+
+    .handle {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      margin-top: 4px;
+    }
+
+    /* ── BIO ── */
+    .bio {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: #a0a8b8;
+      margin-bottom: 40px;
+      border-left: 2px solid var(--accent);
+      padding-left: 16px;
+      opacity: 0;
+      animation: fadein 0.8s 0.25s ease forwards;
+    }
+
+    /* ── TAGS ── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadein 0.8s 0.35s ease forwards;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── LINK CARDS ── */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.25s, transform 0.2s, background 0.25s;
+      opacity: 0;
+      animation: slidein 0.5s ease forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.2s;
+      transform-origin: bottom;
+    }
+
+    .link-card:hover {
+      border-color: var(--accent2);
+      background: #161820;
+      transform: translateX(4px);
+    }
+
+    .link-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .link-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .link-content {
+      flex: 1;
+    }
+
+    .link-title {
+      font-size: 0.88rem;
+      font-weight: 400;
+    }
+
+    .link-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .link-arrow {
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .link-card:hover .link-arrow {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    /* ── PROJECTS GRID ── */
+    .projects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 480px) {
+      .projects {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .project-card {
+      padding: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      opacity: 0;
+      animation: fadein 0.6s ease forwards;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-3px);
+    }
+
+    .project-card .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(200, 241, 53, 0.08);
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+
+    .project-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .project-card p {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadein 0.8s 0.5s ease forwards;
+    }
+
+    .stat-box {
+      padding: 20px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-lbl {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slidein {
+      from {
+        opacity: 0;
+        transform: translateX(-16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .link-card:nth-child(1) {
+      animation-delay: 0.4s;
+    }
+
+    .link-card:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .link-card:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    .link-card:nth-child(4) {
+      animation-delay: 0.7s;
+    }
+
+    .project-card:nth-child(1) {
+      animation-delay: 0.5s;
+    }
+
+    .project-card:nth-child(2) {
+      animation-delay: 0.6s;
+    }
+
+    .project-card:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+
+    .project-card:nth-child(4) {
+      animation-delay: 0.8s;
+    }
+
+    /* ── CONTACT FORM ── */
+    .contact-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadein 0.8s 0.6s ease forwards;
+    }
+
+    .contact-form input {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .contact-form input::placeholder {
+      color: var(--muted);
+    }
+
+    .contact-form input:focus {
+      border-color: var(--accent2);
+    }
+
+    .contact-form button {
+      padding: 12px 20px;
+      background: var(--accent);
+      color: #0b0c10;
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .contact-form button:hover {
+      opacity: 0.88;
+      transform: scale(0.98);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent);
+      color: #0b0c10;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: all 0.35s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="blob"></div>
+  <div id="toast" class="toast">✓ Message received!</div>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="avatar">🧑‍💻</div>
+      <div class="header-text">
+        <h1>Aman <span>Bhanwadiya</span></h1>
+        <div class="handle">@amanbhanwadiya · Full-Stack Developer</div>
+      </div>
+    </div>
+
+    <!-- BIO -->
+    <p class="bio">
+      Building things for the web since 2018. I craft fast, beautiful interfaces and robust APIs.
+      Currently open to freelance projects and full-time roles. Based in Mumbai 🇮🇳, working globally.
+    </p>
+
+    <!-- TAGS -->
+    <div class="tags">
+      <span class="tag">React</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">TypeScript</span>
+      <span class="tag">PostgreSQL</span>
+      <span class="tag">UI Design</span>
+      <span class="tag">Open Source</span>
+    </div>
+
+    <!-- STATS -->
+    <div class="section-label">At a glance</div>
+    <div class="stats">
+      <div class="stat-box">
+        <span class="stat-num">47</span>
+        <span class="stat-lbl">Projects</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">6yr</span>
+        <span class="stat-lbl">Experience</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">12k</span>
+        <span class="stat-lbl">GitHub Stars</span>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="section-label">Find me online</div>
+    <div class="links">
+      <a class="link-card" href="https://github.com/Aman251105" onclick="return true;">
+        <div class="link-icon">🐙</div>
+        <div class="link-content">
+          <div class="link-title">GitHub</div>
+          <div class="link-desc">Open source projects & contributions</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://www.linkedin.com/in/aman-bhanwadiya-817096340/" onclick="return true;">
+        <div class="link-icon">💼</div>
+        <div class="link-content">
+          <div class="link-title">LinkedIn</div>
+          <div class="link-desc">Professional network & resume</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://x.com/ABhanwadiya2511" onclick="return true;">
+        <div class="link-icon">🐦</div>
+        <div class="link-content">
+          <div class="link-title">Twitter / X</div>
+          <div class="link-desc">Thoughts on dev, design & tech</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://amanbhanwadiya.hashnode.dev/" onclick="return true;">
+        <div class="link-icon">✍️</div>
+        <div class="link-content">
+          <div class="link-title">Blog</div>
+          <div class="link-desc">Deep dives, tutorials & opinions</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="section-label">Featured projects</div>
+    <div class="projects">
+      <div class="project-card">
+        <div class="badge">Open Source</div>
+        <h3>ReactFlow UI</h3>
+        <p>A drag-and-drop node editor built with React and Zustand.</p>
+      </div>
+      <div class="project-card">
+        <div class="badge">SaaS</div>
+        <h3>InvoiceKit</h3>
+        <p>Invoice & billing tool for freelancers. 800+ users.</p>
+      </div>
+      <div class="project-card">
+        <div class="badge">Tool</div>
+        <h3>DevPulse CLI</h3>
+        <p>Terminal dashboard for monitoring your servers in real time.</p>
+      </div>
+      <div class="project-card">
+        <div class="badge">API</div>
+        <h3>AuthForge</h3>
+        <p>Drop-in authentication API with social logins and 2FA.</p>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="section-label">Say hello</div>
+    <div class="contact-form">
+      <input type="email" id="emailInput" placeholder="your@email.com" />
+      <button onclick="handleContact()">Connect →</button>
+    </div>
+
+    <footer>
+      Built with <span>♥</span> · Open source · No frameworks · Just HTML
+    </footer>
+
+  </div>
+
+  <script>
+    function handleContact() {
+      const val = document.getElementById('emailInput').value.trim();
+      if (!val || !val.includes('@')) {
+        document.getElementById('emailInput').style.borderColor = '#ff5f5f';
+        setTimeout(() => document.getElementById('emailInput').style.borderColor = '', 1000);
+        return;
+      }
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      document.getElementById('emailInput').value = '';
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Animate stats counter
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const target = el.textContent;
+      const isNum = !isNaN(parseInt(target));
+      if (!isNum) return;
+      const end = parseInt(target);
+      let start = 0;
+      const step = Math.ceil(end / 40);
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= end) { el.textContent = target; clearInterval(timer); }
+        else el.textContent = start;
+      }, 30);
+    });
+  </script>
+</body>
+
+</html>
